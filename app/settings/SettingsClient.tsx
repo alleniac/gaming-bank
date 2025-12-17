@@ -7,8 +7,20 @@ type Props = {
   settings: Settings
 }
 
+function toPercent(decimal: number) {
+  return Math.round((decimal ?? 0) * 100)
+}
+
+function fromPercent(percent: number) {
+  return Math.min(1, Math.max(0, percent / 100))
+}
+
 export default function SettingsClient({ settings }: Props) {
-  const [form, setForm] = useState(settings)
+  const [form, setForm] = useState({
+    ...settings,
+    dailyDecayRate: settings.dailyDecayRate,
+    habitBonusCapPercent: settings.habitBonusCapPercent
+  })
   const [status, setStatus] = useState<string | null>(null)
   const [passcodeStatus, setPasscodeStatus] = useState<string | null>(null)
   const [passcodeForm, setPasscodeForm] = useState({ current: '', next: '' })
@@ -16,10 +28,15 @@ export default function SettingsClient({ settings }: Props) {
   async function saveSettings(e: React.FormEvent) {
     e.preventDefault()
     setStatus('Saving...')
+    const payload = {
+      ...form,
+      dailyDecayRate: form.dailyDecayRate,
+      habitBonusCapPercent: form.habitBonusCapPercent
+    }
     const res = await fetch('/api/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
+      body: JSON.stringify(payload)
     })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
@@ -91,7 +108,7 @@ export default function SettingsClient({ settings }: Props) {
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
-            Interest cap
+            Interest surcharge cap
             <input
               type="number"
               min={0}
@@ -118,25 +135,25 @@ export default function SettingsClient({ settings }: Props) {
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
-            Daily decay rate
+            Daily decay rate (%)
             <input
               type="number"
-              step="0.01"
+              step="1"
               min={0}
-              max={1}
-              value={form.dailyDecayRate}
-              onChange={(e) => setForm({ ...form, dailyDecayRate: Number(e.target.value) })}
+              max={100}
+              value={toPercent(form.dailyDecayRate)}
+              onChange={(e) => setForm({ ...form, dailyDecayRate: fromPercent(Number(e.target.value)) })}
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
             Habit bonus cap (% of focus gaming)
             <input
               type="number"
-              step="0.01"
+              step="1"
               min={0}
-              max={1}
-              value={form.habitBonusCapPercent}
-              onChange={(e) => setForm({ ...form, habitBonusCapPercent: Number(e.target.value) })}
+              max={100}
+              value={toPercent(form.habitBonusCapPercent)}
+              onChange={(e) => setForm({ ...form, habitBonusCapPercent: fromPercent(Number(e.target.value)) })}
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
