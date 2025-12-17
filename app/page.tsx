@@ -1,0 +1,113 @@
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { getDashboard } from '@/services/dashboardService'
+import { isAuthenticated } from '@/services/authService'
+import { TimeBlockType } from '@/domain/types'
+
+export const dynamic = 'force-dynamic'
+
+function fmtMinutes(value: number) {
+  const sign = value < 0 ? '-' : ''
+  const abs = Math.abs(value)
+  return `${sign}${abs} min`
+}
+
+function countdown(target: number) {
+  const diff = target - Date.now()
+  if (diff <= 0) return 'processing soon'
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24)
+  return `${days}d ${hours}h`
+}
+
+const typeColors: Record<TimeBlockType, string> = {
+  [TimeBlockType.FOCUS]: 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/30',
+  [TimeBlockType.GAME]: 'bg-amber-500/20 text-amber-200 border border-amber-400/30',
+  [TimeBlockType.HABIT]: 'bg-emerald-500/15 text-emerald-200 border border-emerald-400/30',
+  [TimeBlockType.MILESTONE]: 'bg-sky-500/15 text-sky-100 border border-sky-400/30',
+  [TimeBlockType.OTHER]: 'bg-slate-500/15 text-slate-200 border border-slate-400/30'
+}
+
+export default async function Home() {
+  if (!(await isAuthenticated())) redirect('/login')
+  const dashboard = getDashboard()
+
+  return (
+    <main className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="card">
+          <div className="text-sm text-slate-400 mb-2">Current balance</div>
+          <div className="text-3xl font-semibold">{fmtMinutes(dashboard.balance)}</div>
+          <p className="text-sm text-slate-400 mt-1">Debt: {fmtMinutes(-dashboard.debtMinutes)}</p>
+        </div>
+        <div className="card">
+          <div className="text-sm text-slate-400 mb-2">Effective rate</div>
+          <div className="text-3xl font-semibold">
+            {dashboard.effectiveRate}:1
+            {dashboard.debtDay > 0 ? <span className="text-sm text-slate-400 ml-2">day {dashboard.debtDay}</span> : null}
+          </div>
+          <p className="text-sm text-slate-400 mt-1">Base rate {dashboard.settings.baseRateFocusPerGaming}:1</p>
+        </div>
+        <div className="card">
+          <div className="text-sm text-slate-400 mb-2">Next weekly cutoff</div>
+          <div className="text-2xl font-semibold">{countdown(dashboard.nextCutoff)}</div>
+          <p className="text-sm text-slate-400 mt-1">{new Date(dashboard.nextCutoff).toLocaleString()}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="card">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold">Habit bonuses (pending)</h2>
+            <Link href="/habits" className="text-sm text-cyan-200 hover:text-cyan-100">
+              Manage habits
+            </Link>
+          </div>
+          <p className="text-sm text-slate-300">Raw pending: {fmtMinutes(dashboard.potentialHabits.rawPending)}</p>
+          <p className="text-sm text-slate-300">Vesting cap: {fmtMinutes(dashboard.potentialHabits.potentialVested)}</p>
+          <p className="text-sm text-slate-400">Excess if unchanged: {fmtMinutes(dashboard.potentialHabits.potentialExcess)}</p>
+        </div>
+        <div className="card">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold">Decay guardrail</h2>
+            <Link href="/settings" className="text-sm text-cyan-200 hover:text-cyan-100">
+              Tune caps
+            </Link>
+          </div>
+          <p className="text-sm text-slate-300">Soft cap: {fmtMinutes(dashboard.settings.softCapMinutes)}</p>
+          <p className="text-sm text-slate-300">Hard cap: {fmtMinutes(dashboard.settings.hardCapMinutes)}</p>
+          <p className="text-sm text-slate-400">If applied today: -{dashboard.decayPreview} min</p>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold">Today&apos;s time blocks</h2>
+          <Link href="/time-blocks" className="text-sm text-cyan-200 hover:text-cyan-100">
+            Log time
+          </Link>
+        </div>
+        {dashboard.todayBlocks.length === 0 ? (
+          <p className="text-slate-400 text-sm">No blocks yet today.</p>
+        ) : (
+          <div className="space-y-2">
+            {dashboard.todayBlocks.map((block) => (
+              <div key={block.id} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2">
+                <div>
+                  <div className="font-semibold">{block.title}</div>
+                  <p className="text-xs text-slate-400">
+                    {new Date(block.start_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} →
+                    {new Date(block.end_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {' · '}
+                    {block.duration_minutes} min
+                  </p>
+                </div>
+                <span className={`badge ${typeColors[block.type]}`}>{block.type}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </main>
+  )
+}
