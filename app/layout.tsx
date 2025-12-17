@@ -29,23 +29,41 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </div>
             {authed ? (
-              <nav className="flex gap-3 text-sm font-medium text-slate-200">
-                <Link href="/" className="hover:text-cyan-200 transition-colors">
+              <nav className="flex gap-2 text-sm font-medium text-slate-700" style={{ columnGap: '8px' }}>
+                <Link
+                  href="/"
+                  className="px-4 py-2 rounded-lg hover:bg-sky-100 hover:text-slate-900 transition-colors shadow-sm bg-white"
+                >
                   Dashboard
                 </Link>
-                <Link href="/time-blocks" className="hover:text-cyan-200 transition-colors">
+                <Link
+                  href="/time-blocks"
+                  className="px-4 py-2 rounded-lg hover:bg-sky-100 hover:text-slate-900 transition-colors shadow-sm bg-white"
+                >
                   Time Blocks
                 </Link>
-                <Link href="/habits" className="hover:text-cyan-200 transition-colors">
+                <Link
+                  href="/habits"
+                  className="px-4 py-2 rounded-lg hover:bg-sky-100 hover:text-slate-900 transition-colors shadow-sm bg-white"
+                >
                   Habits
                 </Link>
-                <Link href="/ledger" className="hover:text-cyan-200 transition-colors">
+                <Link
+                  href="/ledger"
+                  className="px-4 py-2 rounded-lg hover:bg-sky-100 hover:text-slate-900 transition-colors shadow-sm bg-white"
+                >
                   Ledger
                 </Link>
-                <Link href="/settlements" className="hover:text-cyan-200 transition-colors">
+                <Link
+                  href="/settlements"
+                  className="px-4 py-2 rounded-lg hover:bg-sky-100 hover:text-slate-900 transition-colors shadow-sm bg-white"
+                >
                   Settlements
                 </Link>
-                <Link href="/settings" className="hover:text-cyan-200 transition-colors">
+                <Link
+                  href="/settings"
+                  className="px-4 py-2 rounded-lg hover:bg-sky-100 hover:text-slate-900 transition-colors shadow-sm bg-white"
+                >
                   Settings
                 </Link>
               </nav>

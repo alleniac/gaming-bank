@@ -92,7 +92,7 @@ export default function HabitsClient({ habits, checkins, startKey, endKey }: Pro
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <form onSubmit={addHabit} className="card space-y-3">
         <div className="flex items-center justify-between">
           <div>

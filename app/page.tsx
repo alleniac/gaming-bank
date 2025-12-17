@@ -33,8 +33,8 @@ export default async function Home() {
   const dashboard = getDashboard()
 
   return (
-    <main className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <main className="space-y-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         <div className="card">
           <div className="text-sm text-slate-400 mb-2">Current balance</div>
           <div className="text-3xl font-semibold">{fmtMinutes(dashboard.balance)}</div>
@@ -55,7 +55,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <div className="card">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold">Habit bonuses (pending)</h2>

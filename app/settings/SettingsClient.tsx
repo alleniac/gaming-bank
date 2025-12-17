@@ -53,7 +53,7 @@ export default function SettingsClient({ settings }: Props) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <form onSubmit={saveSettings} className="card space-y-3">
         <div className="flex items-center justify-between">
           <div>
