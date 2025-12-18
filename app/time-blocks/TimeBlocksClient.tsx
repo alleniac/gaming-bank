@@ -21,10 +21,10 @@ type Props = {
 }
 
 function defaultTimes() {
-  const now = new Date()
-  const end = new Date(now.getTime() + 30 * 60 * 1000)
+  const end = new Date()
+  const start = new Date(end.getTime() - 30 * 60 * 1000)
   return {
-    start: now.toISOString().slice(0, 16),
+    start: start.toISOString().slice(0, 16),
     end: end.toISOString().slice(0, 16)
   }
 }
