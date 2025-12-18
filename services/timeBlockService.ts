@@ -190,6 +190,9 @@ export function editBlock(id: string, input: BlockInput) {
   if (!existing) {
     throw new Error('Block not found')
   }
+  if (existing.deleted) {
+    throw new Error('Cannot edit a deleted block')
+  }
   const settings = getSettings()
   const timezone = settings.timezone || 'UTC'
   const startTs = new Date(input.start).getTime()

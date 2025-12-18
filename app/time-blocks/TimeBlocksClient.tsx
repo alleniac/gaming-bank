@@ -180,6 +180,7 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
                   <p className="text-xs text-slate-400">
                     {new Date(block.start_ts).toLocaleString()} → {new Date(block.end_ts).toLocaleString()} ({block.duration_minutes} min)
                   </p>
+                  <p className="text-xs text-slate-500">Note: {block.note || '—'}</p>
                   <p className="text-xs text-slate-500">Tags: {block.tags || '—'}</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -187,7 +188,12 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
                   <button type="button" className="bg-slate-700 text-slate-100 px-3 py-2 rounded-lg" onClick={() => startEdit(block)}>
                     Edit
                   </button>
-                  <button type="button" className="bg-red-500 text-white px-3 py-2 rounded-lg" onClick={() => handleDelete(block.id)}>
+                  <button
+                    type="button"
+                    className="bg-red-500 text-white px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={editingId === block.id}
+                    onClick={() => handleDelete(block.id)}
+                  >
                     Delete
                   </button>
                 </div>
