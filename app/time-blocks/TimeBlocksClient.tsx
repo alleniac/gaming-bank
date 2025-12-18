@@ -86,8 +86,8 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
     setForm({
       title: block.title,
       type: block.type,
-      start: new Date(block.start_ts).toISOString().slice(0, 16),
-      end: new Date(block.end_ts).toISOString().slice(0, 16),
+      start: formatLocalInput(new Date(block.start_ts)),
+      end: formatLocalInput(new Date(block.end_ts)),
       countsForFocus: block.counts_for_focus === 1,
       tags: block.tags ?? '',
       note: block.note ?? ''
