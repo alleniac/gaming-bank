@@ -26,7 +26,8 @@ export default function LoginClient({ firstRun }: Props) {
       return
     }
     setStatus('Success')
-    router.push('/')
+    router.replace('/')
+    router.refresh()
   }
 
   return (
