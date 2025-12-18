@@ -25,7 +25,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-sky-600 shadow-lg" />
               <div>
                 <div className="text-xl font-semibold">Gaming Bank</div>
-                <p className="text-sm text-slate-400">Minutes in, minutes out.</p>
               </div>
             </div>
             {authed ? (

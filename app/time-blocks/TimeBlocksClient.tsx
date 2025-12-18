@@ -20,23 +20,30 @@ type Props = {
   initialBlocks: TimeBlock[]
 }
 
-function defaultTimes() {
+function formatLocalInput(date: Date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  const h = String(date.getHours()).padStart(2, '0')
+  const min = String(date.getMinutes()).padStart(2, '0')
+  return `${y}-${m}-${d}T${h}:${min}`
+}
+
+function freshTimes() {
   const end = new Date()
   const start = new Date(end.getTime() - 30 * 60 * 1000)
   return {
-    start: start.toISOString().slice(0, 16),
-    end: end.toISOString().slice(0, 16)
+    start: formatLocalInput(start),
+    end: formatLocalInput(end)
   }
 }
 
 export default function TimeBlocksClient({ initialBlocks }: Props) {
   const router = useRouter()
-  const defaults = useMemo(() => defaultTimes(), [])
   const [form, setForm] = useState({
     title: '',
     type: TimeBlockType.FOCUS,
-    start: defaults.start,
-    end: defaults.end,
+    ...freshTimes(),
     countsForFocus: true,
     tags: '',
     note: ''
@@ -65,7 +72,12 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
     }
     setStatus(editingId ? 'Updated' : 'Logged')
     setEditingId(null)
-    setForm({ ...form, title: '', note: '' })
+    setForm((prev) => ({
+      ...prev,
+      ...freshTimes(),
+      title: '',
+      note: ''
+    }))
     router.refresh()
   }
 
@@ -156,7 +168,12 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
               onClick={() => {
                 setEditingId(null)
                 setStatus(null)
-                setForm({ ...form, title: '', note: '' })
+                setForm((prev) => ({
+                  ...prev,
+                  ...freshTimes(),
+                  title: '',
+                  note: ''
+                }))
               }}
             >
               Cancel
