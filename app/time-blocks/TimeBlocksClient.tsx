@@ -50,10 +50,20 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
   })
   const [status, setStatus] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setError(null)
     setStatus('Saving...')
+    const startDate = new Date(form.start)
+    const endDate = new Date(form.end)
+    if (endDate <= startDate) {
+      setStatus(null)
+      setError('End time should be after the start time')
+      return
+    }
+
     const payload = {
       ...form,
       countsForFocus: form.type === TimeBlockType.FOCUS ? form.countsForFocus : false
@@ -109,7 +119,10 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
             <div className="text-lg font-semibold">Log time</div>
             <p className="text-sm text-slate-400">Focus earns, games spend, habits track.</p>
           </div>
-          {status ? <div className="text-sm text-slate-300">{status}</div> : null}
+          <div className="flex flex-col items-end gap-1">
+            {status ? <div className="text-sm text-slate-300">{status}</div> : null}
+            {error ? <div className="text-sm text-red-500">{error}</div> : null}
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <label className="flex flex-col gap-1 text-sm">
