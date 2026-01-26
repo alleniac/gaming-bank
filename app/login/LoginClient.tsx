@@ -15,10 +15,11 @@ export default function LoginClient({ firstRun }: Props) {
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('Checking...')
+    const detectedTz = Intl.DateTimeFormat().resolvedOptions().timeZone
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ passcode })
+      body: JSON.stringify({ passcode, timezone: detectedTz })
     })
     const data = await res.json().catch(() => ({}))
     if (!res.ok) {
