@@ -11,6 +11,7 @@ const blockSchema = z.object({
   type: z.nativeEnum(TimeBlockType),
   start: z.string(),
   end: z.string(),
+  clientTimezone: z.string().optional(),
   countsForFocus: z.boolean().optional(),
   tags: z.string().optional(),
   note: z.string().optional()

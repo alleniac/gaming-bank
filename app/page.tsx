@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getDashboard } from '@/services/dashboardService'
 import { isAuthenticated } from '@/services/authService'
-import { TimeBlockType } from '@/domain/types'
+import DashboardClient from './DashboardClient'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,13 +20,6 @@ function countdown(target: number) {
   return `${days}d ${hours}h`
 }
 
-const typeColors: Record<TimeBlockType, string> = {
-  [TimeBlockType.FOCUS]: 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/30',
-  [TimeBlockType.GAME]: 'bg-amber-500/20 text-amber-200 border border-amber-400/30',
-  [TimeBlockType.HABIT]: 'bg-emerald-500/15 text-emerald-200 border border-emerald-400/30',
-  [TimeBlockType.MILESTONE]: 'bg-sky-500/15 text-sky-100 border border-sky-400/30',
-  [TimeBlockType.OTHER]: 'bg-slate-500/15 text-slate-200 border border-slate-400/30'
-}
 
 export default async function Home() {
   if (!(await isAuthenticated())) redirect('/login')
@@ -80,33 +73,13 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="card">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold">Today&apos;s time blocks</h2>
+      <div>
+        <div className="flex items-center justify-between mb-2">
           <Link href="/time-blocks" className="text-sm text-cyan-200 hover:text-cyan-100">
             Log time
           </Link>
         </div>
-        {dashboard.todayBlocks.length === 0 ? (
-          <p className="text-slate-400 text-sm">No blocks yet today.</p>
-        ) : (
-          <div className="space-y-2">
-            {dashboard.todayBlocks.map((block) => (
-              <div key={block.id} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2">
-                <div>
-                  <div className="font-semibold">{block.title}</div>
-                  <p className="text-xs text-slate-400">
-                    {new Date(block.start_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} →
-                    {new Date(block.end_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    {' · '}
-                    {block.duration_minutes} min
-                  </p>
-                </div>
-                <span className={`badge ${typeColors[block.type]}`}>{block.type}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        <DashboardClient recentBlocks={dashboard.recentBlocks} />
       </div>
     </main>
   )

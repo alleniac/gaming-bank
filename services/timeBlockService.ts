@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto'
+import { DateTime } from 'luxon'
 import { applyFocusToDebtAndEarnings } from '../domain/debt'
 import { canEarn } from '../domain/decay'
 import { daysBetween } from '../domain/time'
@@ -15,6 +16,7 @@ type BlockInput = {
   type: TimeBlockType
   start: string
   end: string
+  clientTimezone?: string
   countsForFocus?: boolean
   tags?: string
   note?: string
@@ -30,6 +32,15 @@ type SnapshotEntry = {
 function durationMinutes(start: number, end: number): number {
   const diff = end - start
   return Math.max(0, Math.floor(diff / 60000))
+}
+
+function parseClientTimeToMillis(value: string, clientTimezone: string | undefined, fallbackTimezone: string) {
+  const zone = clientTimezone || fallbackTimezone || 'UTC'
+  const parsed = DateTime.fromISO(value, { zone })
+  if (!parsed.isValid) {
+    throw new Error('Invalid datetime')
+  }
+  return parsed.toMillis()
 }
 
 function parseSnapshot(snapshot: string | null): SnapshotEntry[] {
@@ -135,8 +146,8 @@ export function createBlock(input: BlockInput) {
   runMaintenance()
   const settings = getSettings()
   const timezone = settings.timezone || 'UTC'
-  const startTs = new Date(input.start).getTime()
-  const endTs = new Date(input.end).getTime()
+  const startTs = parseClientTimeToMillis(input.start, input.clientTimezone, timezone)
+  const endTs = parseClientTimeToMillis(input.end, input.clientTimezone, timezone)
   const duration = durationMinutes(startTs, endTs)
   const state = computeLedgerState()
   const processed = processBlockEffect({
@@ -195,8 +206,8 @@ export function editBlock(id: string, input: BlockInput) {
   }
   const settings = getSettings()
   const timezone = settings.timezone || 'UTC'
-  const startTs = new Date(input.start).getTime()
-  const endTs = new Date(input.end).getTime()
+  const startTs = parseClientTimeToMillis(input.start, input.clientTimezone, timezone)
+  const endTs = parseClientTimeToMillis(input.end, input.clientTimezone, timezone)
   const duration = durationMinutes(startTs, endTs)
   const state = computeLedgerState()
   const processed = processBlockEffect({

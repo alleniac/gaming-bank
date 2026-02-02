@@ -42,9 +42,7 @@ export function getDashboard(now = new Date()) {
   const potentialExcess = Math.max(rawPending - potentialVested, 0)
 
   const decayPreview = computeDecay(balance, settings)
-  const todayBlocks = listTimeBlocks(100).filter(
-    (b) => localDateKey(b.start_ts, timezone) === todayKey
-  )
+  const recentBlocks = listTimeBlocks(100)
 
   return {
     settings,
@@ -60,7 +58,7 @@ export function getDashboard(now = new Date()) {
       potentialExcess,
       focusEarnWeek
     },
-    todayBlocks,
+    recentBlocks,
     weekRange: { start: start.getTime(), end: end.getTime() }
   }
 }

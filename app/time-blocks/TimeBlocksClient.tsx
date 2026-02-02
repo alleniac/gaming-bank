@@ -56,6 +56,7 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
     e.preventDefault()
     setError(null)
     setStatus('Saving...')
+    const clientTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     const startDate = new Date(form.start)
     const endDate = new Date(form.end)
     if (endDate <= startDate) {
@@ -66,6 +67,7 @@ export default function TimeBlocksClient({ initialBlocks }: Props) {
 
     const payload = {
       ...form,
+      clientTimezone,
       countsForFocus: form.type === TimeBlockType.FOCUS ? form.countsForFocus : false
     }
     const url = editingId ? `/api/time-blocks/${editingId}` : '/api/time-blocks'
