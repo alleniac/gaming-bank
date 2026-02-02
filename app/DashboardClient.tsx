@@ -37,28 +37,28 @@ export default function DashboardClient({ recentBlocks }: Props) {
 
   return (
     <div className="card">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold">Today&apos;s time blocks</h2>
-      </div>
-      {todayBlocks.length === 0 ? (
-        <p className="text-slate-400 text-sm">No blocks yet today.</p>
-      ) : (
-        <div className="space-y-2">
-          {todayBlocks.map((block) => (
-            <div key={block.id} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2">
-              <div>
-                <div className="font-semibold">{block.title}</div>
-                <p className="text-xs text-slate-400">
-                  {new Date(block.start_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} →
-                  {new Date(block.end_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}{' '}
-                  · {block.duration_minutes} min
-                </p>
-              </div>
-              <span className={`badge ${typeColors[block.type]}`}>{block.type}</span>
-            </div>
-          ))}
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold">Today&apos;s time blocks</h2>
         </div>
-      )}
+        {todayBlocks.length === 0 ? (
+          <p className="text-slate-400 text-sm">No blocks yet today.</p>
+        ) : (
+          <div className="space-y-2">
+            {todayBlocks.map((block) => (
+              <div key={block.id} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2">
+                <div>
+                  <div className="font-semibold">{block.title}</div>
+                  <p className="text-xs text-slate-400">
+                    {new Date(block.start_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} →
+                    {new Date(block.end_ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}{' '}
+                    · {block.duration_minutes} min
+                  </p>
+                </div>
+                <span className={`badge ${typeColors[block.type]}`}>{block.type}</span>
+              </div>
+            ))}
+          </div>
+        )}
     </div>
   )
 }

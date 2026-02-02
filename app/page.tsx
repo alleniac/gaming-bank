@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getDashboard } from '@/services/dashboardService'
 import { isAuthenticated } from '@/services/authService'
 import DashboardClient from './DashboardClient'
+import SystemTimezone from './SystemTimezone'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,7 +28,7 @@ export default async function Home() {
 
   return (
     <main className="space-y-2">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
         <div className="card">
           <div className="text-sm text-slate-400 mb-2">Current balance</div>
           <div className="text-3xl font-semibold">{fmtMinutes(dashboard.balance)}</div>
@@ -40,6 +41,16 @@ export default async function Home() {
             {dashboard.debtDay > 0 ? <span className="text-sm text-slate-400 ml-2">day {dashboard.debtDay}</span> : null}
           </div>
           <p className="text-sm text-slate-400 mt-1">Base rate {dashboard.settings.baseRateFocusPerGaming}:1</p>
+        </div>
+        <div className="card">
+          <div className="text-sm text-slate-400 mb-2">Timezone</div>
+          <div className="text-sm text-slate-600">
+            System: <SystemTimezone />
+          </div>
+          <div className="text-sm text-slate-600">Server preset: {dashboard.settings.timezone || 'UTC'}</div>
+          <p className="text-xs text-slate-500 mt-2">
+            App times render in your current system timezone. Habit vesting follows the server preset timezone.
+          </p>
         </div>
         <div className="card">
           <div className="text-sm text-slate-400 mb-2">Next weekly cutoff</div>
