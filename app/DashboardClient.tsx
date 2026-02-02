@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { TimeBlockType } from '@/domain/types'
 
 type TimeBlock = {
@@ -37,9 +38,12 @@ export default function DashboardClient({ recentBlocks }: Props) {
 
   return (
     <div className="card">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold">Today&apos;s time blocks</h2>
-        </div>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-semibold">Today&apos;s time blocks</h2>
+        <Link href="/time-blocks" className="text-sm text-cyan-200 hover:text-cyan-100">
+          Log time
+        </Link>
+      </div>
         {todayBlocks.length === 0 ? (
           <p className="text-slate-400 text-sm">No blocks yet today.</p>
         ) : (

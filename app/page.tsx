@@ -85,11 +85,6 @@ export default async function Home() {
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <Link href="/time-blocks" className="text-sm text-cyan-200 hover:text-cyan-100">
-            Log time
-          </Link>
-        </div>
         <DashboardClient recentBlocks={dashboard.recentBlocks} />
       </div>
     </main>
