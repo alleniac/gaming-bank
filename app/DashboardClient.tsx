@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { TimeBlockType } from '@/domain/types'
 
 type TimeBlock = {
@@ -33,8 +34,14 @@ function localDateKey(ts: number) {
 }
 
 export default function DashboardClient({ recentBlocks }: Props) {
-  const todayKey = localDateKey(Date.now())
-  const todayBlocks = recentBlocks.filter((block) => localDateKey(block.start_ts) === todayKey)
+  const [todayKey, setTodayKey] = useState<string | null>(null)
+
+  useEffect(() => {
+    setTodayKey(localDateKey(Date.now()))
+  }, [])
+
+  const todayBlocks =
+    todayKey ? recentBlocks.filter((block) => localDateKey(block.start_ts) === todayKey) : []
 
   return (
     <div className="card">
@@ -44,10 +51,12 @@ export default function DashboardClient({ recentBlocks }: Props) {
           Log time
         </Link>
       </div>
-        {todayBlocks.length === 0 ? (
-          <p className="text-slate-400 text-sm">No blocks yet today.</p>
-        ) : (
-          <div className="space-y-2">
+      {!todayKey ? (
+        <p className="text-slate-400 text-sm">Loading…</p>
+      ) : todayBlocks.length === 0 ? (
+        <p className="text-slate-400 text-sm">No blocks yet today.</p>
+      ) : (
+        <div className="space-y-2">
             {todayBlocks.map((block) => (
               <div key={block.id} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2">
                 <div>
